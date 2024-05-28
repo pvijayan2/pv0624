@@ -1,5 +1,6 @@
 package com.toolrent.demo.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +27,10 @@ public class RentalController {
 	public ResponseEntity<RentalAPIResponse> createRentalAgreement(@RequestBody @Valid RentalInputDTO user,
 			HttpServletRequest request) {
 		log.info("UserRegisterController::registerUser request body {}", ValueMapper.jsonAsString(user));
-		RentalAPIResponse responseDTO = null;
-		
-		return null;
+		RentalAPIResponse responseDTO = new RentalAPIResponse();
+		responseDTO.setFinalCharge(100);
+		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
 	}
 
 }

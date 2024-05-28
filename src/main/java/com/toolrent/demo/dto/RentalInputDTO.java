@@ -16,10 +16,10 @@ public class RentalInputDTO {
 	@NotBlank(message = "checkoutDate is required.")
 	private String checkoutDate;
 
-	@NotBlank(message = "rentalDays is required.")
+	//@NotBlank(message = "rentalDays is required.")
 	private int rentalDays;
 
-	@NotBlank(message = "discount is required.")
+	//@NotBlank(message = "discount is required.")
 	private int discount;
 
 }
