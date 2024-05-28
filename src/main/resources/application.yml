@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    username: postgres
+    password: priya123
+    url: jdbc:postgresql://localhost:5432/rental
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+  flyway:
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    enabled: false
+    default-schema: ${spring.jpa.properties.hibernate.default_schema}
+    placeholders:
+      schema: ${spring.jpa.properties.hibernate.default_schema}
