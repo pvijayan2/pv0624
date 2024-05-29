@@ -1,6 +1,6 @@
 package com.toolrent.demo.controller;
 
-import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -41,8 +41,8 @@ public class RentalController {
 		System.out.println("val----->" + val);
 		boolean flg = HolidayCheck.checkIfIndpDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
 		if (flg) {
-			Calendar cal = HolidayCheck.getJuly4HolidayDate(input.getCheckoutDate());
-			System.out.println("cal----->" + cal);
+			Date  finalHolidayDate = HolidayCheck.getJuly4HolidayDate(input.getCheckoutDate());
+			System.out.println("finalHolidayDate----->" + finalHolidayDate);
 		}
 
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
