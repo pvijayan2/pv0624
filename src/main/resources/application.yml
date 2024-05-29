@@ -15,4 +15,27 @@ spring:
     enabled: false
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
     placeholders:
-      schema: ${spring.jpa.properties.hibernate.default_schema}
+      schema: ${spring.jpa.properties.hibernate.default_schema} 
+toolrental:
+  tool:
+    CHNS : Chainsaw_Stihl
+    LADW : Ladder_Werner
+    JAKD : Jackhammer_DeWalt
+    JAKR : Jackhammer_Ridgid   
+  tooldailycharge:
+    daily:
+      Ladder : 1.99
+      Chainsaw : 1.49
+      Jackhammer : 2.99
+    weekday:
+      Ladder : true
+      Chainsaw : true
+      Jackhammer : true
+    weekend:
+      Ladder : true
+      Chainsaw : false
+      Jackhammer : false
+    holiday:
+      Ladder : false
+      Chainsaw : true
+      Jackhammer : false  
