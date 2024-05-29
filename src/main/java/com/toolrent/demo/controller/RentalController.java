@@ -39,11 +39,19 @@ public class RentalController {
 		responseDTO.setFinalCharge(100);
 		String val = env.getProperty("toolrental.tool.CHNS");
 		System.out.println("val----->" + val);
+		
 		boolean flg = HolidayCheck.checkIfIndpDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
 		if (flg) {
 			Date  finalHolidayDate = HolidayCheck.getJuly4HolidayDate(input.getCheckoutDate());
 			System.out.println("finalHolidayDate----->" + finalHolidayDate);
 		}
+		
+		boolean laborDayFlg = HolidayCheck.checkIfLaborDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
+		if(laborDayFlg) {
+			Date  laborDate = HolidayCheck.getLaborHolidayDate(input.getCheckoutDate());
+			System.out.println("laborDate----->" + laborDate);
+		}
+		
 
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 

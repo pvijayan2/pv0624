@@ -107,4 +107,78 @@ public class HolidayCheck {
 		return finalHolidayDate;
 	}
 
+	/*
+	 * This method checks if labor day falls in between the checkout and checkin
+	 * days
+	 */
+	public static boolean checkIfLaborDayFallsBetn(String checkoutDate, int rentalDays) {
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+		boolean flg = false;
+		try {
+			Date startDate = format.parse(checkoutDate);
+			Calendar startCalendarDate = Calendar.getInstance();
+			startCalendarDate.setTime(startDate);
+			System.out.println("startCalendarDate----->" + startCalendarDate);
+
+			Calendar endCalendarDate = Calendar.getInstance();
+			endCalendarDate = startCalendarDate;
+			endCalendarDate.add(Calendar.DATE, 5); // Adding 5 days
+			Date endDate = endCalendarDate.getTime();
+			System.out.println("Date after adding rentalDays days----> " + endDate);
+
+			Date laborDayDate = getLaborHolidayDate(checkoutDate);
+			boolean isInRange = laborDayDate.compareTo(startDate) >= 0 && laborDayDate.compareTo(endDate) <= 0;
+
+			if (isInRange) {
+				System.out.println("Labor day falls.");
+				flg = true;
+			} else {
+				System.out.println("Labor day does not fall");
+			}
+		} catch (ParseException e) {
+			System.out.println("Error parsing date: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Error parsing date: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return flg;
+	}
+
+	/*
+	 * Get the labor holiday date
+	 */
+	public static Date getLaborHolidayDate(String checkoutDate) {
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+		Calendar calendar = Calendar.getInstance();
+		try {
+			Date startDate = format.parse(checkoutDate);
+			Calendar startCalendarDate = Calendar.getInstance();
+			startCalendarDate.setTime(startDate);
+			int year = startCalendarDate.get(Calendar.YEAR);
+
+			// Create a Calendar instance and set it to January 1st of the specified year
+			calendar.set(year, Calendar.JANUARY, 1);
+
+			// Find the first Monday of September in the specified year
+			while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
+					|| calendar.get(Calendar.MONTH) != Calendar.SEPTEMBER) {
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
+			}
+
+			// Print the date of Labor Day
+			System.out.println("Labor Day in " + year + " falls on: " + calendar.getTime());
+
+		} catch (ParseException e) {
+			System.out.println("Error parsing date: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Error parsing date: " + e.getMessage());
+			e.printStackTrace();
+		}
+		Date laborHolidayDate = calendar.getTime();
+		System.out.println("laborHolidayDate---> " + laborHolidayDate);
+		return laborHolidayDate;
+	}
+
 }
