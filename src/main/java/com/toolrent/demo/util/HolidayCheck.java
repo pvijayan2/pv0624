@@ -6,8 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class HolidayCheck {
-	
-	
+
 	public static boolean checkIfIndpDayFallsBetn(String checkoutDate, int rentalDays) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		boolean flg = false;
@@ -46,8 +45,7 @@ public class HolidayCheck {
 		}
 		return flg;
 	}
-	
-	
+
 	public static Date getJuly4HolidayDate(String checkoutDate) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		Calendar calendar = Calendar.getInstance();
@@ -55,18 +53,18 @@ public class HolidayCheck {
 			Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
-			System.out.println("startCalendarDate----->"+startCalendarDate);
-			
+			System.out.println("startCalendarDate----->" + startCalendarDate);
+
 			Calendar july4thCalendar = Calendar.getInstance();
 			int year = startCalendarDate.get(Calendar.YEAR);
 			july4thCalendar.set(year, Calendar.JULY, 4);
-			//Date July4Date = july4thCalendar.getTime();
-			System.out.println("year----->"+year);
-			System.out.println("july4thCalendar----->"+july4thCalendar);
-			
+			// Date July4Date = july4thCalendar.getTime();
+			System.out.println("year----->" + year);
+			System.out.println("july4thCalendar----->" + july4thCalendar);
+
 			// Get the day of the week
 			int dayOfWeek = july4thCalendar.get(Calendar.DAY_OF_WEEK);
-			System.out.println("dayOfWeek----->"+dayOfWeek);
+			System.out.println("dayOfWeek----->" + dayOfWeek);
 
 			// Map the day of the week to its corresponding name
 			String[] daysOfWeek = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
@@ -89,18 +87,18 @@ public class HolidayCheck {
 				yield july4thCalendar;
 			}
 			};
-			
-		}catch (ParseException e) {
+
+		} catch (ParseException e) {
 			System.out.println("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
 			System.out.println("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		Date finalHolidayDate = calendar.getTime();
 		System.out.println("finalHolidayDate---> " + finalHolidayDate);
 		return finalHolidayDate;
 	}
-	
+
 }
