@@ -7,6 +7,9 @@ import java.util.Date;
 
 public class HolidayCheck {
 
+	/*
+	 * This method checks if July4th falls in between the checkout and checkin days
+	 */
 	public static boolean checkIfIndpDayFallsBetn(String checkoutDate, int rentalDays) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		boolean flg = false;
@@ -46,6 +49,9 @@ public class HolidayCheck {
 		return flg;
 	}
 
+	/*
+	 * This method determines which day has to be considered as holiday for July 4th
+	 */
 	public static Date getJuly4HolidayDate(String checkoutDate) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		Calendar calendar = Calendar.getInstance();
