@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toolrent.demo.dto.RentalAPIResponse;
 import com.toolrent.demo.dto.RentalInputDTO;
+import com.toolrent.demo.service.RentalService;
 import com.toolrent.demo.util.HolidayCheck;
 import com.toolrent.demo.util.ValueMapper;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/rentalTool")
 @RestController
 @Slf4j
+@Tag(
+    name = "Tool Rental Agreement",
+    description = "Create the tool rental agreement")
 public class RentalController {
+	
+	@Autowired
+	private RentalService rentalService;
 
 	@Autowired
 	Environment env;
