@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toolrent.demo.dto.RentalAPIResponse;
 import com.toolrent.demo.dto.RentalInputDTO;
+import com.toolrent.demo.model.RentalRequest;
 import com.toolrent.demo.service.RentalService;
 import com.toolrent.demo.util.HolidayCheck;
 import com.toolrent.demo.util.ValueMapper;
@@ -42,25 +43,22 @@ public class RentalController {
 	@PostMapping("/createRentalAgreement")
 	public ResponseEntity<RentalAPIResponse> createRentalAgreement(@RequestBody @Valid RentalInputDTO input,
 			HttpServletRequest request) {
-		log.info("RentalController::registerUser request body {}", ValueMapper.jsonAsString(input));
+		log.info("RentalController::createRentalAgreement request body {}", ValueMapper.jsonAsString(input));
 		RentalAPIResponse responseDTO = new RentalAPIResponse();
+
+		RentalRequest rentalRequest = RentalRequest.builder().toolCode(input.getToolCode())
+				.checkoutDate(input.getCheckoutDate()).rentalDays(input.getRentalDays()).discount(input.getDiscount())
+				.build();
+		responseDTO = rentalService.process(rentalRequest);
+		
+		
+		
 		responseDTO.setFinalCharge(100);
 		String val = env.getProperty("toolrental.tool.CHNS");
 		log.debug("val----->" + val);
 		
-		boolean flg = HolidayCheck.checkIfIndpDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
-		if (flg) {
-			Date  finalHolidayDate = HolidayCheck.getJuly4HolidayDate(input.getCheckoutDate());
-			log.debug("finalHolidayDate----->" + finalHolidayDate);
-		}
-		
-		boolean laborDayFlg = HolidayCheck.checkIfLaborDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
-		if(laborDayFlg) {
-			Date  laborDate = HolidayCheck.getLaborHolidayDate(input.getCheckoutDate());
-			log.debug("laborDate----->" + laborDate);
-		}
-		
-
+		 log.info(
+			        "RentalController::createRentalAgreement response {}", ValueMapper.jsonAsString(responseDTO));
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
 	}

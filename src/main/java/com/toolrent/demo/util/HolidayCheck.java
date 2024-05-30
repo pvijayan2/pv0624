@@ -2,6 +2,10 @@ package com.toolrent.demo.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,20 +17,12 @@ public class HolidayCheck {
 	/*
 	 * This method checks if July4th falls in between the checkout and checkin days
 	 */
-	public static boolean checkIfIndpDayFallsBetn(String checkoutDate, int rentalDays) {
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+	public static boolean checkIfIndpDayFallsBetn(Date startDate, Date endDate) {
 		boolean flg = false;
 		try {
-			Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
 			log.debug("startDate----> " + startDate);
-
-			Calendar endCalendarDate = Calendar.getInstance();
-			endCalendarDate = startCalendarDate;
-			endCalendarDate.add(Calendar.DATE, 5); // Adding 5 days
-			Date endDate = endCalendarDate.getTime();
-			System.out.println("Date after adding rentalDays days----> " + endDate);
 
 			Calendar july4thCalendar = Calendar.getInstance();
 			int year = startCalendarDate.get(Calendar.YEAR);
@@ -42,9 +38,6 @@ public class HolidayCheck {
 				log.debug("July 4th does not fall");
 			}
 
-		} catch (ParseException e) {
-			log.debug("Error parsing date: " + e.getMessage());
-			e.printStackTrace();
 		} catch (Exception e) {
 			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
@@ -114,33 +107,18 @@ public class HolidayCheck {
 	 * This method checks if labor day falls in between the checkout and checkin
 	 * days
 	 */
-	public static boolean checkIfLaborDayFallsBetn(String checkoutDate, int rentalDays) {
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+	public static boolean checkIfLaborDayFallsBetn(Date startDate, Date endDate) {
 		boolean flg = false;
 		try {
-			Date startDate = format.parse(checkoutDate);
-			Calendar startCalendarDate = Calendar.getInstance();
-			startCalendarDate.setTime(startDate);
-			log.debug("startCalendarDate----->" + startCalendarDate);
-
-			Calendar endCalendarDate = Calendar.getInstance();
-			endCalendarDate = startCalendarDate;
-			endCalendarDate.add(Calendar.DATE, 5); // Adding 5 days
-			Date endDate = endCalendarDate.getTime();
-			log.debug("Date after adding rentalDays days----> " + endDate);
-
-			Date laborDayDate = getLaborHolidayDate(checkoutDate);
+			Date laborDayDate = getLaborHolidayDate(startDate);
 			boolean isInRange = laborDayDate.compareTo(startDate) >= 0 && laborDayDate.compareTo(endDate) <= 0;
-
 			if (isInRange) {
 				log.debug("Labor day falls.");
 				flg = true;
 			} else {
 				log.debug("Labor day does not fall");
 			}
-		} catch (ParseException e) {
-			log.debug("Error parsing date: " + e.getMessage());
-			e.printStackTrace();
+
 		} catch (Exception e) {
 			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
@@ -151,11 +129,11 @@ public class HolidayCheck {
 	/*
 	 * Get the labor holiday date
 	 */
-	public static Date getLaborHolidayDate(String checkoutDate) {
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+	public static Date getLaborHolidayDate(Date startDate) {
+		// SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		Calendar calendar = Calendar.getInstance();
 		try {
-			Date startDate = format.parse(checkoutDate);
+			// Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
 			int year = startCalendarDate.get(Calendar.YEAR);
@@ -172,9 +150,6 @@ public class HolidayCheck {
 			// Print the date of Labor Day
 			log.debug("Labor Day in " + year + " falls on: " + calendar.getTime());
 
-		} catch (ParseException e) {
-			log.debug("Error parsing date: " + e.getMessage());
-			e.printStackTrace();
 		} catch (Exception e) {
 			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
@@ -183,5 +158,34 @@ public class HolidayCheck {
 		log.debug("laborHolidayDate---> " + laborHolidayDate);
 		return laborHolidayDate;
 	}
+
+	/*
+	 * Get the weekend counts
+	 */
+	public static int[] checkIfWeekEndFallsBetn(Date startDate, Date endDate) {
+		LocalDate startLocalDate = convertToLocalDate(startDate);
+		LocalDate endLocalDate = convertToLocalDate(endDate);
+		int saturdayCount = 0;
+		int sundayCount = 0;
+
+		LocalDate date = startLocalDate;
+		while (!date.isAfter(endLocalDate)) {
+			DayOfWeek dayOfWeek = date.getDayOfWeek();
+			if (dayOfWeek == DayOfWeek.SATURDAY) {
+				saturdayCount++;
+			} else if (dayOfWeek == DayOfWeek.SUNDAY) {
+				sundayCount++;
+			}
+			date = date.plusDays(1);
+		}
+
+		return new int[] { saturdayCount, sundayCount };
+	}
+	
+	public static LocalDate convertToLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime())
+                      .atZone(ZoneId.systemDefault())
+                      .toLocalDate();
+    }
 
 }

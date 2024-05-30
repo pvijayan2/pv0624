@@ -19,7 +19,7 @@ spring:
 logging:
   file.name: /Users/priyavijayan/Documents/logs/application-debug.log
   level:
-    root: DEBUG
+    root: INFO
     com.nbc.news.ip: DEBUG
   pattern:
     console: "%d %-5level %logger : %msg%n"

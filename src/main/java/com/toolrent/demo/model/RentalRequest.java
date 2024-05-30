@@ -2,12 +2,14 @@ package com.toolrent.demo.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RentalRequest {
 
 	@NotBlank(message = "toolCode is required.")
