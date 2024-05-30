@@ -15,7 +15,15 @@ spring:
     enabled: false
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
     placeholders:
-      schema: ${spring.jpa.properties.hibernate.default_schema} 
+      schema: ${spring.jpa.properties.hibernate.default_schema}
+logging:
+  file.name: /Users/priyavijayan/Documents/logs/application-debug.log
+  level:
+    root: DEBUG
+    com.nbc.news.ip: DEBUG
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
 toolrental:
   tool:
     CHNS : Chainsaw_Stihl

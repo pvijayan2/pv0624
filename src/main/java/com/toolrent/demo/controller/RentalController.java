@@ -42,22 +42,22 @@ public class RentalController {
 	@PostMapping("/createRentalAgreement")
 	public ResponseEntity<RentalAPIResponse> createRentalAgreement(@RequestBody @Valid RentalInputDTO input,
 			HttpServletRequest request) {
-		log.info("UserRegisterController::registerUser request body {}", ValueMapper.jsonAsString(input));
+		log.info("RentalController::registerUser request body {}", ValueMapper.jsonAsString(input));
 		RentalAPIResponse responseDTO = new RentalAPIResponse();
 		responseDTO.setFinalCharge(100);
 		String val = env.getProperty("toolrental.tool.CHNS");
-		System.out.println("val----->" + val);
+		log.debug("val----->" + val);
 		
 		boolean flg = HolidayCheck.checkIfIndpDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
 		if (flg) {
 			Date  finalHolidayDate = HolidayCheck.getJuly4HolidayDate(input.getCheckoutDate());
-			System.out.println("finalHolidayDate----->" + finalHolidayDate);
+			log.debug("finalHolidayDate----->" + finalHolidayDate);
 		}
 		
 		boolean laborDayFlg = HolidayCheck.checkIfLaborDayFallsBetn(input.getCheckoutDate(), input.getRentalDays());
 		if(laborDayFlg) {
 			Date  laborDate = HolidayCheck.getLaborHolidayDate(input.getCheckoutDate());
-			System.out.println("laborDate----->" + laborDate);
+			log.debug("laborDate----->" + laborDate);
 		}
 		
 

@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HolidayCheck {
 
 	/*
@@ -17,7 +20,7 @@ public class HolidayCheck {
 			Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
-			System.out.println("startDate----> " + startDate);
+			log.debug("startDate----> " + startDate);
 
 			Calendar endCalendarDate = Calendar.getInstance();
 			endCalendarDate = startCalendarDate;
@@ -33,17 +36,17 @@ public class HolidayCheck {
 			boolean isRange = July4Date.compareTo(startDate) >= 0 && July4Date.compareTo(endDate) <= 0;
 
 			if (isRange) {
-				System.out.println("July 4th falls.");
+				log.debug("July 4th falls.");
 				flg = true;
 			} else {
-				System.out.println("July 4th does not fall");
+				log.debug("July 4th does not fall");
 			}
 
 		} catch (ParseException e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return flg;
@@ -59,25 +62,25 @@ public class HolidayCheck {
 			Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
-			System.out.println("startCalendarDate----->" + startCalendarDate);
+			log.debug("startCalendarDate----->" + startCalendarDate);
 
 			Calendar july4thCalendar = Calendar.getInstance();
 			int year = startCalendarDate.get(Calendar.YEAR);
 			july4thCalendar.set(year, Calendar.JULY, 4);
 			// Date July4Date = july4thCalendar.getTime();
-			System.out.println("year----->" + year);
-			System.out.println("july4thCalendar----->" + july4thCalendar);
+			log.debug("year----->" + year);
+			log.debug("july4thCalendar----->" + july4thCalendar);
 
 			// Get the day of the week
 			int dayOfWeek = july4thCalendar.get(Calendar.DAY_OF_WEEK);
-			System.out.println("dayOfWeek----->" + dayOfWeek);
+			log.debug("dayOfWeek----->" + dayOfWeek);
 
 			// Map the day of the week to its corresponding name
 			String[] daysOfWeek = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
 			// Print the result
 			String july4Day = daysOfWeek[dayOfWeek - 1];
-			System.out.println("july4Day---> " + july4Day);
+			log.debug("july4Day---> " + july4Day);
 
 			Calendar calendar2 = Calendar.getInstance();
 			calendar = switch (july4Day) {
@@ -95,15 +98,15 @@ public class HolidayCheck {
 			};
 
 		} catch (ParseException e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		}
 
 		Date finalHolidayDate = calendar.getTime();
-		System.out.println("finalHolidayDate---> " + finalHolidayDate);
+		log.debug("finalHolidayDate---> " + finalHolidayDate);
 		return finalHolidayDate;
 	}
 
@@ -118,28 +121,28 @@ public class HolidayCheck {
 			Date startDate = format.parse(checkoutDate);
 			Calendar startCalendarDate = Calendar.getInstance();
 			startCalendarDate.setTime(startDate);
-			System.out.println("startCalendarDate----->" + startCalendarDate);
+			log.debug("startCalendarDate----->" + startCalendarDate);
 
 			Calendar endCalendarDate = Calendar.getInstance();
 			endCalendarDate = startCalendarDate;
 			endCalendarDate.add(Calendar.DATE, 5); // Adding 5 days
 			Date endDate = endCalendarDate.getTime();
-			System.out.println("Date after adding rentalDays days----> " + endDate);
+			log.debug("Date after adding rentalDays days----> " + endDate);
 
 			Date laborDayDate = getLaborHolidayDate(checkoutDate);
 			boolean isInRange = laborDayDate.compareTo(startDate) >= 0 && laborDayDate.compareTo(endDate) <= 0;
 
 			if (isInRange) {
-				System.out.println("Labor day falls.");
+				log.debug("Labor day falls.");
 				flg = true;
 			} else {
-				System.out.println("Labor day does not fall");
+				log.debug("Labor day does not fall");
 			}
 		} catch (ParseException e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return flg;
@@ -167,17 +170,17 @@ public class HolidayCheck {
 			}
 
 			// Print the date of Labor Day
-			System.out.println("Labor Day in " + year + " falls on: " + calendar.getTime());
+			log.debug("Labor Day in " + year + " falls on: " + calendar.getTime());
 
 		} catch (ParseException e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Error parsing date: " + e.getMessage());
+			log.debug("Error parsing date: " + e.getMessage());
 			e.printStackTrace();
 		}
 		Date laborHolidayDate = calendar.getTime();
-		System.out.println("laborHolidayDate---> " + laborHolidayDate);
+		log.debug("laborHolidayDate---> " + laborHolidayDate);
 		return laborHolidayDate;
 	}
 
