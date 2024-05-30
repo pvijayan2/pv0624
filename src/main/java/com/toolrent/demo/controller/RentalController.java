@@ -1,9 +1,6 @@
 package com.toolrent.demo.controller;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,6 @@ import com.toolrent.demo.dto.RentalAPIResponse;
 import com.toolrent.demo.dto.RentalInputDTO;
 import com.toolrent.demo.model.RentalRequest;
 import com.toolrent.demo.service.RentalService;
-import com.toolrent.demo.util.HolidayCheck;
 import com.toolrent.demo.util.ValueMapper;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,16 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/rentalTool")
 @RestController
 @Slf4j
-@Tag(
-    name = "Tool Rental Agreement",
-    description = "Create the tool rental agreement")
+@Tag(name = "Tool Rental Agreement", description = "Create the tool rental agreement")
 public class RentalController {
-	
-	@Autowired
-	private RentalService rentalService;
 
 	@Autowired
-	Environment env;
+	private RentalService rentalService;
 
 	@PostMapping("/createRentalAgreement")
 	public ResponseEntity<RentalAPIResponse> createRentalAgreement(@RequestBody @Valid RentalInputDTO input,
@@ -50,15 +41,8 @@ public class RentalController {
 				.checkoutDate(input.getCheckoutDate()).rentalDays(input.getRentalDays()).discount(input.getDiscount())
 				.build();
 		responseDTO = rentalService.process(rentalRequest);
-		
-		
-		
 		responseDTO.setFinalCharge(100);
-		String val = env.getProperty("toolrental.tool.CHNS");
-		log.debug("val----->" + val);
-		
-		 log.info(
-			        "RentalController::createRentalAgreement response {}", ValueMapper.jsonAsString(responseDTO));
+		log.info("RentalController::createRentalAgreement response {}", ValueMapper.jsonAsString(responseDTO));
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
 	}
