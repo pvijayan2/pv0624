@@ -14,12 +14,12 @@ public class RentalAPIResponse {
 	private String toolCode;
 	private String toolType;
 	private String toolBrand;
-	private String rentalDays;
+	private int rentalDays;
 	private String checkoutDate;
 	private String dueDate;
-	private long dailyRentalCharge;
+	private String dailyRentalCharge;
 	private int chargeDays;
-	private long preDiscountCharge;
+	private double preDiscountCharge;
 	private long discountPercent;
 	private long discountAmount;
 	private long finalCharge;

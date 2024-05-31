@@ -45,7 +45,9 @@ public class RentalService {
 			ChargeDays chargeDays = new ChargeDays(startDate, endDate, checkIfIndpDayFallsBetn,
 					checkIfLaborDayFallsBetn, rentalRequest.getRentalDays(), weekEndDaysCnt);
 
-			double numOfChargeDays = calculateChargeDays(chargeDays, rentalRequest);
+			RentData rentData = calculateChargeDays(chargeDays, rentalRequest);
+
+			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode());
 
 		} catch (Exception e) {
 			throw new ServiceException("Issue with RentalService", "process method", 112, "UE 112");
@@ -54,9 +56,19 @@ public class RentalService {
 		return rentalAPIResponse;
 	}
 
-	private double calculateChargeDays(ChargeDays chargeDays, RentalRequest rentalRequest) {
+	public RentalAPIResponse populateResponse(Date startDate, Date endDate, ChargeDays chargeDays, RentData rentData,
+			String toolCode) {
+		RentalAPIResponse rentalAPIResponse = RentalAPIResponse.builder().toolCode(toolCode)
+				.toolType(rentData.toolType()).toolBrand(rentData.brand()).rentalDays(chargeDays.rentalDays())
+				.dailyRentalCharge(rentData.dailyCharge()).chargeDays(rentData.chargeDays())
+				.preDiscountCharge(rentData.preDiscountCharge()).build();
+		return rentalAPIResponse;
+	}
+
+	private RentData calculateChargeDays(ChargeDays chargeDays, RentalRequest rentalRequest) {
 		int rentalDays = chargeDays.rentalDays();
-		double totalCharge = 0;
+		double totalPreDiscountCharge = 0;
+		RentData rentData = null;
 		try {
 			String toolNameBrand = env.getProperty("toolrental.tool." + rentalRequest.getToolCode());
 			System.out.println("toolNameBrand--->" + toolNameBrand);
@@ -110,14 +122,17 @@ public class RentalService {
 			System.out.println("totalChargeableDays--->" + totalChargeableDays);
 
 			// calculate total weekday charge
-			totalCharge = totalChargeableDays * Double.valueOf(dailyCharge);
+			totalPreDiscountCharge = totalChargeableDays * Double.valueOf(dailyCharge);
+			System.out.println("totalCharge--->" + totalPreDiscountCharge);
 
-			System.out.println("totalCharge--->" + totalCharge);
+			rentData = new RentData(name, brand, dailyCharge, totalChargeableDays, totalPreDiscountCharge);
+			System.out.println("rentData--->" + rentData);
+
 		} catch (Exception e) {
 			throw new ServiceException("Issue with calculation", "calculateChargeDays method", 113, "UE 113");
 		}
 
-		return totalCharge;
+		return rentData;
 	}
 
 	public Date calculateDueDate(Date startDate, int rentalDays) {

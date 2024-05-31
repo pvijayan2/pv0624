@@ -41,7 +41,6 @@ public class RentalController {
 				.checkoutDate(input.getCheckoutDate()).rentalDays(input.getRentalDays()).discount(input.getDiscount())
 				.build();
 		responseDTO = rentalService.process(rentalRequest);
-		responseDTO.setFinalCharge(100);
 		log.info("RentalController::createRentalAgreement response {}", ValueMapper.jsonAsString(responseDTO));
 		return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
