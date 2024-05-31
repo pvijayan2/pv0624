@@ -13,6 +13,7 @@ import com.toolrent.demo.dto.RentalAPIResponse;
 import com.toolrent.demo.exception.ServiceException;
 import com.toolrent.demo.model.RentalRequest;
 import com.toolrent.demo.util.HolidayCheck;
+import com.toolrent.demo.util.RentalUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,7 @@ public class RentalService {
 			ChargeDays chargeDays = new ChargeDays(startDate, endDate, checkIfIndpDayFallsBetn,
 					checkIfLaborDayFallsBetn, rentalRequest.getRentalDays(), weekEndDaysCnt);
 
-			RentData rentData = calculateChargeDays(chargeDays, rentalRequest);
+			RentData rentData = calculateChargeDaysAndPreDiscountCharge(chargeDays, rentalRequest);
 
 			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode());
 
@@ -58,14 +59,16 @@ public class RentalService {
 
 	public RentalAPIResponse populateResponse(Date startDate, Date endDate, ChargeDays chargeDays, RentData rentData,
 			String toolCode) {
+		String startdt = RentalUtil.formatDateToMMDDYY(startDate);
+		String enddt = RentalUtil.formatDateToMMDDYY(endDate);
 		RentalAPIResponse rentalAPIResponse = RentalAPIResponse.builder().toolCode(toolCode)
 				.toolType(rentData.toolType()).toolBrand(rentData.brand()).rentalDays(chargeDays.rentalDays())
-				.dailyRentalCharge(rentData.dailyCharge()).chargeDays(rentData.chargeDays())
-				.preDiscountCharge(rentData.preDiscountCharge()).build();
+				.checkoutDate(startdt).dueDate(enddt).dailyRentalCharge(rentData.dailyCharge())
+				.chargeDays(rentData.chargeDays()).preDiscountCharge(rentData.preDiscountCharge()).build();
 		return rentalAPIResponse;
 	}
 
-	private RentData calculateChargeDays(ChargeDays chargeDays, RentalRequest rentalRequest) {
+	private RentData calculateChargeDaysAndPreDiscountCharge(ChargeDays chargeDays, RentalRequest rentalRequest) {
 		int rentalDays = chargeDays.rentalDays();
 		double totalPreDiscountCharge = 0;
 		RentData rentData = null;
