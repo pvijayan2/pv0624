@@ -22,6 +22,6 @@ public class RentalRequest {
 	private int rentalDays;
 
 	//@NotBlank(message = "discount is required.")
-	private int discount;
+	private double discount;
 
 }

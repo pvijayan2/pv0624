@@ -18,9 +18,9 @@ public class RentalAPIResponse {
 	private String checkoutDate;
 	private String dueDate;
 	private String dailyRentalCharge;
-	private int chargeDays;
+	private double chargeDays;
 	private double preDiscountCharge;
-	private long discountPercent;
-	private long discountAmount;
-	private long finalCharge;
+	private double discountPercent;
+	private double discountAmount;
+	private double finalCharge;
 }

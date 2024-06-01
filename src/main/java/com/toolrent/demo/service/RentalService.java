@@ -25,14 +25,13 @@ public class RentalService {
 	Environment env;
 
 	public RentalAPIResponse process(RentalRequest rentalRequest) {
-
 		log.debug("Entering RentalService : RentalAPIResponse:process--->");
 		log.debug("rentalRequest in service--->" + rentalRequest);
 		RentalAPIResponse rentalAPIResponse = new RentalAPIResponse();
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 		try {
 			Date startDate = format.parse(rentalRequest.getCheckoutDate());
-			Date endDate = calculateDueDate(startDate, rentalRequest.getRentalDays());
+			Date endDate = RentalUtil.calculateDueDate(startDate, rentalRequest.getRentalDays());
 			System.out.println("Due date------>" + endDate);
 
 			boolean checkIfIndpDayFallsBetn = HolidayCheck.checkIfIndpDayFallsBetn(startDate, endDate);
@@ -48,7 +47,9 @@ public class RentalService {
 
 			RentData rentData = calculateChargeDaysAndPreDiscountCharge(chargeDays, rentalRequest);
 
-			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode());
+			DiscountData discountData = calculateDiscountAndFinalCharge(rentData, rentalRequest.getDiscount());
+
+			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode(), discountData);
 
 		} catch (Exception e) {
 			throw new ServiceException("Issue with RentalService", "process method", 112, "UE 112");
@@ -57,17 +58,26 @@ public class RentalService {
 		return rentalAPIResponse;
 	}
 
-	public RentalAPIResponse populateResponse(Date startDate, Date endDate, ChargeDays chargeDays, RentData rentData,
-			String toolCode) {
-		String startdt = RentalUtil.formatDateToMMDDYY(startDate);
-		String enddt = RentalUtil.formatDateToMMDDYY(endDate);
-		RentalAPIResponse rentalAPIResponse = RentalAPIResponse.builder().toolCode(toolCode)
-				.toolType(rentData.toolType()).toolBrand(rentData.brand()).rentalDays(chargeDays.rentalDays())
-				.checkoutDate(startdt).dueDate(enddt).dailyRentalCharge(rentData.dailyCharge())
-				.chargeDays(rentData.chargeDays()).preDiscountCharge(rentData.preDiscountCharge()).build();
-		return rentalAPIResponse;
+	/*
+	 * Calculate the discount related part
+	 */
+	private DiscountData calculateDiscountAndFinalCharge(RentData rentData, double discount) {
+		double dailyCharge = Double.valueOf(rentData.dailyCharge());
+		double percentCon = discount / 100;
+		double discountAmount = dailyCharge * percentCon * rentData.chargeDays();
+
+		// Calculate the final price after the discount
+		double preDiscountCharge = rentData.preDiscountCharge();
+		double finalPrice = preDiscountCharge - discountAmount;
+
+		DiscountData discountData = new DiscountData(discount, discountAmount, finalPrice);
+		System.out.println("Discount Data----->" + discountData);
+		return discountData;
 	}
 
+	/*
+	 * Logic for calculating charge days and prediscount charge
+	 */
 	private RentData calculateChargeDaysAndPreDiscountCharge(ChargeDays chargeDays, RentalRequest rentalRequest) {
 		int rentalDays = chargeDays.rentalDays();
 		double totalPreDiscountCharge = 0;
@@ -138,22 +148,19 @@ public class RentalService {
 		return rentData;
 	}
 
-	public Date calculateDueDate(Date startDate, int rentalDays) {
-		Date endDate = new Date();
-		try {
-			Calendar startCalendarDate = Calendar.getInstance();
-			startCalendarDate.setTime(startDate);
-			log.debug("startDate----> " + startDate);
-
-			Calendar endCalendarDate = Calendar.getInstance();
-			endCalendarDate = startCalendarDate;
-			endCalendarDate.add(Calendar.DATE, 5); // Adding 5 days
-			endDate = endCalendarDate.getTime();
-			System.out.println("Date after adding rentalDays days----> " + endDate);
-		} catch (Exception e) {
-			throw new ServiceException("Issue with Due Date calculation", "Date Parsing Error", 120, "UE 189");
-		}
-		return endDate;
+	/*
+	 * creating response
+	 */
+	public RentalAPIResponse populateResponse(Date startDate, Date endDate, ChargeDays chargeDays, RentData rentData,
+			String toolCode, DiscountData discountData) {
+		String startdt = RentalUtil.formatDateToMMDDYY(startDate);
+		String enddt = RentalUtil.formatDateToMMDDYY(endDate);
+		RentalAPIResponse rentalAPIResponse = RentalAPIResponse.builder().toolCode(toolCode)
+				.toolType(rentData.toolType()).toolBrand(rentData.brand()).rentalDays(chargeDays.rentalDays())
+				.checkoutDate(startdt).dueDate(enddt).dailyRentalCharge(rentData.dailyCharge())
+				.chargeDays(rentData.chargeDays()).preDiscountCharge(rentData.preDiscountCharge())
+				.discountPercent(discountData.discountPercent()).discountAmount(discountData.discountAmount())
+				.finalCharge(discountData.finalCharge()).build();
+		return rentalAPIResponse;
 	}
-
 }
