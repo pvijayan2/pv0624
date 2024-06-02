@@ -17,3 +17,6 @@ public class DemoApplication {
 	}
 
 }
+//Swagger url : http://localhost:8080/swagger-ui/index.html
+//api doc : http://localhost:8080/registration-docs(.yaml)
+//actuator : http://localhost:8080/actuator
