@@ -49,7 +49,8 @@ public class RentalService {
 
 			DiscountData discountData = calculateDiscountAndFinalCharge(rentData, rentalRequest.getDiscount());
 
-			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode(), discountData);
+			rentalAPIResponse = populateResponse(startDate, endDate, chargeDays, rentData, rentalRequest.getToolCode(),
+					discountData);
 
 		} catch (Exception e) {
 			throw new ServiceException("Issue with RentalService", "process method", 112, "UE 112");
@@ -86,8 +87,12 @@ public class RentalService {
 			String toolNameBrand = env.getProperty("toolrental.tool." + rentalRequest.getToolCode());
 			System.out.println("toolNameBrand--->" + toolNameBrand);
 			String[] stArray = toolNameBrand.split("_");
-			String name = stArray[0];
-			String brand = stArray[1];
+			String name = null;
+			String brand = null;
+			if (stArray.length == 2) {
+				name = stArray[0];
+				brand = stArray[1];
+			}
 			System.out.println("name--->" + name);
 			System.out.println("brand--->" + brand);
 
